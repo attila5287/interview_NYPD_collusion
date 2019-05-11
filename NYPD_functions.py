@@ -6,7 +6,7 @@ def dataFrameNYC(FILE_NAME = 'NYPD_Motor_Vehicle_Collisions.csv'):
     READS ~1,5 MILLION ROW CSV FILE, RETURNS MASTER DATAFRAME
     """
     BASE_DIR = os.getcwd()
-    STATIC_FOLDER = 'INT_03_PYTHON_PANDAS_NYC_COLLISION'
+    STATIC_FOLDER = '../'
     # FILE_NAME = 'NYPD_Motor_Vehicle_Collisions.csv'
     PATH_COMPILED = os.path.join(BASE_DIR, STATIC_FOLDER, FILE_NAME)
     print(PATH_COMPILED)
@@ -16,3 +16,6 @@ def dataFrameNYC(FILE_NAME = 'NYPD_Motor_Vehicle_Collisions.csv'):
     print(column_list)
     return _df
 
+
+
+# dataFrameNYC()

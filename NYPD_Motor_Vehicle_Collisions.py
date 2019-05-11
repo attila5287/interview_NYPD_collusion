@@ -25,9 +25,7 @@ def solution01of08():
     print()
     return None
 
-
 # solution01of08()
-# --------------------------------
 # total number of persons injured:
 # NUMBER OF PERSONS INJURED    368,034
 
@@ -67,7 +65,6 @@ def solution02of08():
     print('Brooklyn to total number of collusions for 2016 below:')
     print(final_df['BROOKLYN'][0])
     return None
-
 
 # solution02of08()
 # brooklyn 30.96 percent
@@ -116,7 +113,6 @@ def solution03of08():
     # ratio_kill = float(killed_num/total_num)
     # print()
     return None
-
 
 # solution03of08()
 # percentage of either inj or killed is 2.17 %
