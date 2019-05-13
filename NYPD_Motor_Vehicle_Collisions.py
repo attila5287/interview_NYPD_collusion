@@ -3,6 +3,7 @@ warnings.simplefilter('ignore')
 import pandas as pd
 import os
 import datetime as dt
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 plt.style.use('fivethirtyeight')
@@ -24,6 +25,7 @@ def solution01of08():
     print(out_num)
     print()
     return None
+
 
 # solution01of08()
 # total number of persons injured:
@@ -65,6 +67,7 @@ def solution02of08():
     print('Brooklyn to total number of collusions for 2016 below:')
     print(final_df['BROOKLYN'][0])
     return None
+
 
 # solution02of08()
 # brooklyn 30.96 percent
@@ -113,6 +116,7 @@ def solution03of08():
     # ratio_kill = float(killed_num/total_num)
     # print()
     return None
+
 
 # solution03of08()
 # percentage of either inj or killed is 2.17 %
@@ -184,7 +188,201 @@ def solution04of08():
     return None
 
 
-solution04of08()
+# d solution04of08()
 # bor0ugh           Bronx  Brooklyn  Manhattan   Queens  Staten Island
 # rat3AlcPerCap  0.000179  0.000213   0.000147  0.00021       0.000202
 # Brooklyn is the highest 0.00021 per capita
+
+
+def solution05of08():
+    """
+    SOLUTION FOR FIFTH OF EIGHT
+    """
+
+    def dataFram3NYC(FILE_NAME='NYPD_Motor_Vehicle_Collisions.csv',
+                     use_parent_dir=False):
+        """
+        READS ~1,5 MILLION ROW CSV FILE, RETURNS MASTER DATAFRAME
+        use_parent_dir will use parent directory as base directory
+        """
+        if use_parent_dir == True:
+            CURRENTWRK_DIR = os.getcwd()
+            BASE_DIR = os.path.dirname(CURRENTWRK_DIR)
+        elif use_parent_dir == False:
+            BASE_DIR = os.getcwd()
+
+    #     STATIC_FOLDER = os.path.dirname(BASE_DIR)
+        STATIC_FOLDER = ''
+        # FILE_NAME = 'NYPD_Motor_Vehicle_Collisions.csv'
+        PATH_COMPILED = os.path.join(BASE_DIR, STATIC_FOLDER, FILE_NAME)
+        print('\n> > > > dataFrameNYC() now reading csv with file path below')
+        print(PATH_COMPILED)
+        print()
+        _df = pd.read_csv(
+            PATH_COMPILED, encoding="iso-8859-1", low_memory=False)
+        col_list = list(_df.columns)
+        col_ind3x = np.arange(len(col_list))
+        col_dict = dict(zip(col_ind3x, col_list))
+        print(col_dict)
+        return _df
+
+    def focusDataframer(columns2keep_list=[0, 3, 24, 25, 26, 27, 28]):
+        """
+        MODIFIED DATA FRAMER, PRINTS OUT ALL COLUMN INDEX/NAMES, 
+        REQUIRES A LIST OF REQUESTED COLUMN INDEXES AS INTEGERS
+        RETURNS A DATAFRAME WITH ONLY USER- LABELS
+        """
+        raw_df = dataFram3NYC(use_parent_dir=True)
+        col_list = list(raw_df.columns)
+        col_ind3x = np.arange(len(col_list))
+        col_dict = dict(zip(col_ind3x, col_list))
+        col_final = []
+        for index in columns2keep_list:
+            add_this_column = col_dict[index]
+            col_final.append(add_this_column)
+        col_final = [str(index) for index in col_final]
+        _df = raw_df[col_final]
+        print(col_final)
+        return _df
+
+    def dateFilterMyDataFrame(focus_df=focusDataframer(),
+                              bring_all_records_for='2016'):
+        """
+        REQUIRES A DATAFRAME WITH A TARGET FIELD NAMED 'DATE',
+        FILTERS DATE BY FOUR DIGIT YEAR 'YYYY' STRING INPUT
+        """
+        pass
+        print('> > > dateFilterMyDataFrame() filtering all records by year : '
+              + bring_all_records_for)
+        #     focus_df = focusDataframer()
+        focus_df['dat3'] = [date[-4:] for date in focus_df['DATE']]
+        filtered_by_date_df = focus_df.loc[focus_df['dat3'] ==
+                                           bring_all_records_for]
+        return filtered_by_date_df.drop(columns='DATE')
+
+    def numberVehiclesInvAccidents(
+            dateFilteredDataFrame=dateFilterMyDataFrame(
+                bring_all_records_for='2016')):
+        """
+        REQUIRES A DATA FILTERED DATAFRAME, CALCULATES NUM OF VEHICLES
+        FOR THE PRE-FILTERED DATE. RETURNS INTEGER AND PRINTS LOGS
+        """
+        pass
+        focus2016_df = dateFilterMyDataFrame(bring_all_records_for='2016')
+        vector_df = focus2016_df.isna()
+        vehicle_columns_list = vector_df.columns[1:6]
+        colTrueSum_list = vector_df[vehicle_columns_list].sum()
+        accumulator = 0
+        for sum in colTrueSum_list:
+            accumulator += sum
+        totalVehicle_num = len(vector_df) * 5 - accumulator
+        print()
+        print(
+            '> > >findNumberAccidentsInYear() calculated number of vehicles involved in accidents: {:,}'
+            .format(totalVehicle_num))
+        return int(totalVehicle_num)
+
+    numberVehiclesInvAccidents()
+
+    # Q-5: Obtain the number of vehicles involved in each collision in 2016. Group the collisions by zip code and compute the sum of all vehicles involved in collisions in each zip code, then report the maximum of these values.
+
+    def numberOfVehiclesInvZIPCode(
+            focus2016_df=dateFilterMyDataFrame(bring_all_records_for='2016')):
+        """
+        REQUIRES A DATE FILTERED DATAFRAME, CALCULATES NUM VEHICLES INVOLVED
+        RETURNS A SORTED DATAFRAME, PRINTS TOP TEN ZIP CODE AS A DICT
+        """
+        grouped_df = focus2016_df.groupby('ZIP CODE').count()
+        grouped_df['numVehicleInv'] = 0
+        for column in vehicle_columns_list:
+            grouped_df['numVehicleInv'] = grouped_df[
+                'numVehicleInv'] + grouped_df[column]
+        final_df = grouped_df[['numVehicleInv']]
+        finalSorted_df = final_df.sort_values(
+            by='numVehicleInv', ascending=False)
+        final_list = grouped_df['numVehicleInv']
+        focus2016_df = dateFilterMyDataFrame(bring_all_records_for='2016')
+        grouped_df = focus2016_df.groupby('ZIP CODE').count()
+        grouped_df['numVehicleInv'] = 0
+        for column in vehicle_columns_list:
+            grouped_df['numVehicleInv'] = grouped_df[
+                'numVehicleInv'] + grouped_df[column]
+        final_df = grouped_df[['numVehicleInv']]
+        finalSorted_df = final_df.sort_values(
+            by='numVehicleInv', ascending=False)
+        print(
+            '> > >numberOfVehiclesInvZIPCode() calculated number of vehicle involved in acc per ZIP code  :'
+        )
+        promptAFewZip_dict = finalSorted_df.head().to_dict()
+        print(promptAFewZip_dict)
+        #     final_list = finalSorted_df['numVehicleInv']
+        return finalSorted_df
+
+    # numberOfVehiclesInvZIPCode()
+
+    def mungleData4PlotTop5ZIPVehCnt(
+            focus2016_df=dateFilterMyDataFrame(bring_all_records_for='2016')):
+        """
+        REQUIRES DATE FILTERED DATAFRAME, DATA MUNGLING FOR DATA VISUALIZATION
+        """
+        grouped_df = focus2016_df.groupby('ZIP CODE').count()
+        grouped_df['numVehicleInv'] = 0
+        vehicle_columns_list = grouped_df.columns
+        for column in vehicle_columns_list:
+            grouped_df['numVehicleInv'] = grouped_df[
+                'numVehicleInv'] + grouped_df[column]
+        final_df = grouped_df[['numVehicleInv']]
+        finalSorted_df = final_df.sort_values(
+            by='numVehicleInv', ascending=False)
+        final_list = grouped_df['numVehicleInv']
+        focus2016_df = dateFilterMyDataFrame(bring_all_records_for='2016')
+        grouped_df = focus2016_df.groupby('ZIP CODE').count()
+        grouped_df['numVehicleInv'] = 0
+        for column in vehicle_columns_list:
+            grouped_df['numVehicleInv'] = grouped_df[
+                'numVehicleInv'] + grouped_df[column]
+        final_df = grouped_df[['numVehicleInv']]
+        finalSorted_df = final_df.sort_values(
+            by='numVehicleInv', ascending=False)
+        zip2Nhood_list = [
+            'Kings', 'Long Island', 'BergenBeach', 'Queens', 'Kings_'
+        ]
+        topFive_df = finalSorted_df.head()
+        topFive_df['neighb0urhood'] = [
+            str(hoodname) for hoodname in zip2Nhood_list
+        ]
+        dataPlotFive_df = topFive_df.reset_index().drop(
+            columns='ZIP CODE').set_index('neighb0urhood')
+        print()
+        print('> > > mungleData4PlotTop5ZIPVehCnt() adds names to ZIP codes')
+        print(dataPlotFive_df.head().to_dict())
+        return dataPlotFive_df
+
+    mungleData4PlotTop5ZIPVehCnt()
+
+    def barChartTop5ZIPVehCnt(dataPlotFive_df=mungleData4PlotTop5ZIPVehCnt()):
+        """
+        REQURES DATA FRAME BY mungleData4PlotTop5ZIPVehCnt() AND SHOWS A BAR CHART
+        """
+        x_bar = list(dataPlotFive_df.index)
+        y_bar = dataPlotFive_df['numVehicleInv']
+        plt.barh(
+            x_bar,
+            y_bar,
+            color='coral',
+            linewidth=2,
+            edgecolor='lightgrey',
+            alpha=0.80)
+        plt.show()
+        plt.savefig('Q5_ZIPCode_numberVehicles.png')
+        print()
+        print(
+            'barChartTop5ZIPVehCnt() saved figure under file named Q5_ZIPCode_numberVehicles.png'
+        )
+        return None
+
+    barChartTop5ZIPVehCnt(dataPlotFive_df=mungleData4PlotTop5ZIPVehCnt())
+    return None
+
+
+solution05of08()
