@@ -373,6 +373,7 @@ def solution05of08():
             linewidth=2,
             edgecolor='lightgrey',
             alpha=0.80)
+        plt.savefig('Q5_ZIPCode_numberVehicles.png')
         plt.show()
         plt.savefig('Q5_ZIPCode_numberVehicles.png')
         print()
