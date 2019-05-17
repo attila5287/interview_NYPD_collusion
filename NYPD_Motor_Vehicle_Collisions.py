@@ -7,7 +7,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 plt.style.use('fivethirtyeight')
-from NYPD_functions import dataFrameNYC
+from NYPD_functions import (
+    dataFrameNYC, 
+    dataFram3NYC,
+    focusDataframer,
+    dateFilterMyDataFrame
+)
+
 
 
 def solution01of08():
@@ -375,7 +381,7 @@ def solution05of08():
             alpha=0.80)
         plt.savefig('Q5_ZIPCode_numberVehicles.png')
         plt.show()
-        plt.savefig('Q5_ZIPCode_numberVehicles.png')
+        
         print()
         print(
             'barChartTop5ZIPVehCnt() saved figure under file named Q5_ZIPCode_numberVehicles.png'
@@ -387,3 +393,193 @@ def solution05of08():
 
 
 solution05of08()
+
+def solution06of08():
+
+    def gr0upYearByCollusionCount(focus_df = focusDataframer([0,23])):
+        """
+        REQUIRES A DATAFRAME WITH A TARGET FIELD NAMED 'DATE',
+        GROUP YEAR BY COLLUSION COUNT
+        """
+        pass
+        print()
+        print('> > > > gr0upYearByCollusionCount() calculated collusion count under year: ')
+        focus_df['ye4r'] = [date[-4:] for date in focus_df['DATE']]
+        gr0uped_df = focus_df.groupby('ye4r').count().drop(columns = 'DATE')
+        gr0uped_df['c0llusionCount'] = [
+            collusionCount
+            for collusionCount in gr0uped_df['UNIQUE KEY']
+        ]
+        gr0uped_df = gr0uped_df.drop(columns='UNIQUE KEY')
+        check_row_total = gr0uped_df.sum()[0]
+        print('> > > > check if sum of all yearly collusion counts add up total row number {:,}'.format(check_row_total))
+        print('> > > >                                                                     1,487,383 expected []')
+        return gr0uped_df
+    # ----------------- 1487383
+    gr0upYearByCollusionCount()
+
+    def yearIndexedCollusionCountDF(gr0uped_df = gr0upYearByCollusionCount(), 
+                                 year_first = 2013, 
+                                 year_last =  2018):
+        """
+        REQUIRES GROUPED DATAFRAME WITH YEAR ON INDEX AND COLLUSION COUNT AS VALUES
+        """
+        pass
+        print()
+        print('> > > yearIndexedCollusionCountDF() returns a _df with below years on label: ')
+        year_last += 1
+        yrs_list = [int(year) for year in np.arange(int(year_first), int(year_last))]
+        print(yrs_list)
+        yearIndex_df = gr0uped_df.T
+        yearStr_list = [str(year) for year in yrs_list]
+        return yearIndex_df[yearStr_list].T
+
+    def snsRegressionPlot(df = yearIndexedCollusionCountDF().T, yTarget='c0llusionCount',gr0up_df=yearIndexedCollusionCountDF()):
+        """
+        PLOTS REGRESSION PLOTS YEAR VS COLLISION COUNT
+        REQUIRES A YEAR
+        """
+        c0lorList=['coral', 'goldenrod', 'salmon', 'orangered', 'darkolivegreen', 'olivedrab',
+                   'cadetblue', 'palevioletred', 'mediumorchid', 'darkorange', 'teal', 'cyan', 'aqua']
+
+        plt.rcParams["font.size"] = 12
+
+        _colList_ = df.columns
+        plt.figure(figsize = (12,8))        
+        plt.title('Q6 - NO-OF-COLLUSIONS vs YEAR: TREND ANALYSIS')
+        plt.xlabel('YEAR ')
+        plt.ylabel('NUMBER OF COLLUSIONS')
+        int_for_x_axis = [
+            int(year)
+            for year in gr0up_df.index
+                         ]
+        x_axis = pd.Series(int_for_x_axis)
+        y_axis = pd.Series(gr0up_df[yTarget])
+        rand1nt = np.random.randint(0,len(c0lorList))
+        c0lor = c0lorList[rand1nt] 
+        sns.regplot(y=y_axis, x=x_axis, data=df, fit_reg = True, color= c0lor, marker='o')
+        plt.grid(True)
+        fileName2save = 'Q6_YEAR-VS-COLL-CT-2013-THRU-18.png'
+        plt.savefig(fileName2save)
+        plt.show()
+        return None
+
+    snsRegressionPlot()
+    # Q-6: Consider the total number of collisions each year from 2013-2018. 
+    # * Is there an apparent trend? 
+    # * Fit a linear regression for the number of collisions per year and report its slope.
+    return None
+
+# solution06of08()
+
+
+def solution08of08():
+    """
+    # Q-8: We can use collision locations to estimate the areas of the zip code regions. (Assumption) Represent each as an ellipse with semi-axes given by a single standard deviation of the longitude and latitude. For collisions in 2017, estimate the number of collisions per square kilometer of each zip code region. Considering zipcodes with at least 1000 collisions, report the greatest value for collisions per square kilometer. Note: Some entries may have invalid or incorrect (latitude, longitude) coordinates. Drop any values that are invalid or seem unreasonable for New York City.
+    """
+    welcome_message = '> > > solution08of08() ... running...'
+    print(welcome_message)
+    def getRidOfZerosFromLatLon(yearFiltered_df = dateFilterMyDataFrame(focus_df = focusDataframer(), bring_all_records_for = '2017')):
+        """
+        REMOVES RECORDS WITH ZERO IN EITHER LATITUDE OR LONGITUDE FROM DATAFRAME
+        SINCE NEITHER LAT-ZERO NOR LON-ZERO IS IN NYC
+        """
+        yf_df = yearFiltered_df.copy()
+        yfd_df = yf_df.dropna().loc[:, (yf_df == 0).any()]
+        yfd_df['zipCod3'] = [
+            yf_df['ZIP CODE'][ind3x]
+            for ind3x in list(yfd_df.index)
+        ]
+        return yfd_df
+
+    def zipCodevsColSqKm_df(yearFilteredDroppedGrouped_df = getRidOfZerosFromLatLon()):
+        """
+        RETURNS A DATAFRAME ZIP CODE VS COLLUSION CT
+        """
+        yfdgCount_df = yearFilteredDroppedGrouped_df.groupby('zipCod3').count()  #YearFiltered_Dropped_GROUPED_DF
+        yfdgCount_df['collusionCount'] = yfdgCount_df['LATITUDE']
+        yfdgCount_df1 = yfdgCount_df.drop(columns=['LATITUDE','LONGITUDE'])
+        yfdgCount_df2 = yfdgCount_df1.sort_values('collusionCount', ascending = False)
+        zipCollusion_df = yfdgCount_df2.loc[yfdgCount_df2['collusionCount'] > 1000]
+        return zipCollusion_df
+
+    def standardDeviationZIPLatLan(yearFiltered_df = dateFilterMyDataFrame(focus_df = focusDataframer(), bring_all_records_for = '2017')):
+    #     dropZeroLat_df = yearFiltered_df.loc[yearFiltered_df['LATITUDE'] == 0]
+        print(yearFiltered_df.describe())
+    #     print(dropZeroLat_df.describe())
+        print('> > > standardDeviationZIPLatLan() calculated std of LAT and LAN: ')
+        return yearFiltered_df.groupby('ZIP CODE').std()
+
+    def zipCodeAreaSqKm(yearFilteredDroppedGrouped_df= standardDeviationZIPLatLan()):
+        yfdg_df = yearFilteredDroppedGrouped_df.copy() 
+        #YearFiltered_Dropped_GROUPED_DF
+        PI = 3.14
+        yfdg_df['are4'] = [
+            float(PI/4*a *69*b*55)  for a,b in zip(yfdg_df['LATITUDE'], yfdg_df['LONGITUDE'])
+        ]
+
+        final_df = yfdg_df.drop(columns=['LATITUDE', 'LONGITUDE'])
+        # .loc[yfdg_df['are4'] >= 1000]
+        calculatedTotalArea = final_df.sort_values(by='are4', ascending=False).sum() #752,000 km2
+        nyc_totalArea = 783800
+        realization_factor = calculatedTotalArea/nyc_totalArea
+        print('> > > zipCodevsColSqKm_df calculated estimated area as 752 thousand km2')
+        print('> > >                   NYC total area actually is 783 thousand 800 km2')
+        print('> > >                   realization factor has been used to adjust nominal to real values')
+        print('> > >                   ',realization_factor)
+        final_df['ar3a'] = [
+            float(area*realization_factor)
+            for area in final_df['are4']
+        ]
+        zipArea_df = final_df.drop(columns='are4').T
+        return zipArea_df
+
+
+    def zipCodeColPerSqKm(zipCollusion_df= zipCodevsColSqKm_df(), zipArea_df=zipCodeAreaSqKm()):
+        """
+        RETURNS ZIP CODE VS COLLUSION-PER-SQ-KM2 STORED IN A DATAFRAME
+        """
+        zipCollusion_df['AR3A'] = [
+            zipArea_df[zipCode][0] for zipCode in list(zipCollusion_df.index)
+        ]
+        # zipArea_df 
+        zipCollusion_df['colPerSqKm'] = [
+            collusion/area
+            for collusion, area in zip(zipCollusion_df['collusionCount'], zipCollusion_df['AR3A'])
+        ]
+        zipColSqKm_df= zipCollusion_df.sort_values(by='colPerSqKm', ascending=False)[[
+            'colPerSqKm'
+        ]]
+        return zipColSqKm_df
+
+    def answer08of08(zipColSqKm_df = zipCodeColPerSqKm()):
+        z1p = zipColSqKm_df['colPerSqKm'].index[0]
+        colMax = zipColSqKm_df['colPerSqKm'][0]
+        print('> > > q8finalAnswer() for highest collusion per area density is {:,.0f} col/sq-km'.format(colMax))
+        print('> > > > > > > > > > > while ZIP code with highest density above is ' + z1p)
+        return None
+    answer08of08()
+
+    def bubbleZipCodeVsColPerSqKm(zipColSqKm_df = zipCodeColPerSqKm(), bubbleCount = 10):
+        """
+        PLOTS A BUBBLE CHART WITH BUBBLE SIZE PROPORTIONATE TO COLLUSION COUNT PER ZIP CODE
+        """
+        z1p_list = zipColSqKm_df['colPerSqKm'].index[:bubbleCount]
+        colMax_list = zipColSqKm_df['colPerSqKm'][:bubbleCount]
+        plt.figure(figsize=(22, 15))
+        plt.title('BUBBLE CHART: ZIP CODE VS COLLUSION-PER-SQ-KM-2017')
+        plt.ylabel('Collusion Per Sq-Km for 2017')
+        plt.xlabel('ZIP Code (NYPD collusion dataset)')
+        plt.xticks(rotation=45)
+        for ZIPCODE,COLSQKM in zip(z1p_list,colMax_list):
+            plt.scatter(ZIPCODE,COLSQKM, s=5000*COLSQKM/colMax_list.max(), marker='o', edgecolors='black' , alpha = 0.50,label = str(ZIPCODE))
+        plt.legend(loc='best')
+        fileName2save = 'Q8_ZIPCODE_COL-SQ-KM-2017.png'
+        plt.savefig(fileName2save)
+        plt.show()
+
+    bubbleZipCodeVsColPerSqKm()
+
+    return None
+
+# solution08of08()
