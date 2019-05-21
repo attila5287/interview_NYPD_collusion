@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.path as mpath
 
 # from generate_color4_plot import (
 #     generateRandomDark_c0lor()
@@ -125,3 +126,19 @@ def generateRandomMatplotlib_c0lor():
     rand1nt = np.random.randint(0, len(c0lorList))
     c0lor = c0lorList[rand1nt]
     return c0lor
+
+
+def cut_st4r(n):
+    """
+    this is a code of a negative-spaced-star-shaped SVG path that will
+    mark rounds help player  see important date points easily
+    """
+    star = mpath.Path.unit_regular_star(n)
+    circle = mpath.Path.unit_circle()
+    # concatenate the circle with an internal cutout of the star
+    verts = np.concatenate([circle.vertices, star.vertices[::-1, ...]])
+    codes = np.concatenate([circle.codes, star.codes])
+    cut_star = mpath.Path(verts, codes)
+    return cut_star
+
+

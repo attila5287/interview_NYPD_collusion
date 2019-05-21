@@ -1,7 +1,12 @@
 import os
 import pandas as pd
 import numpy as np
-# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
+from generate_color4_plot import (
+    generateRandomDark_c0lor,
+    generateRandomLight_c0lor,
+    generateRandomMatplotlib_c0lor
+    )
+# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
 def dataFram3NYC(FILE_NAME = 'NYPD_Motor_Vehicle_Collisions.csv', use_parent_dir = False):
     """
     READS ~1,5 MILLION ROW CSV FILE, RETURNS MASTER DATAFRAME
@@ -26,7 +31,7 @@ def dataFram3NYC(FILE_NAME = 'NYPD_Motor_Vehicle_Collisions.csv', use_parent_dir
     col_dict = dict(zip( col_ind3x, col_list))
     print(col_dict)
     return _df
-# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
+# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
 def focusDataframer(columns2keep_list = [0,3,4,5]):
     """
     MODIFIED DATA FRAMER, PRINTS OUT ALL COLUMN INDEX/NAMES, 
@@ -55,7 +60,7 @@ def focusDataframer(columns2keep_list = [0,3,4,5]):
     for selected_col,keepthis in zip(columns2keep_list,col_final):
         print('> > >                                  ', selected_col,' keeps ', keepthis)
     return _df
-# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
+# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
 def dateFilterMyDataFrame(focus_df = focusDataframer(), bring_all_records_for = '2016'):
     """
     REQUIRES A DATAFRAME WITH A TARGET FIELD NAMED 'DATE',
@@ -70,7 +75,7 @@ def dateFilterMyDataFrame(focus_df = focusDataframer(), bring_all_records_for = 
     ]
     filtered_by_date_df = focus_df.loc[focus_df['dat3'] == bring_all_records_for]
     return filtered_by_date_df.drop(columns = 'DATE')
-# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----
+# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
 def addMonthFilterByYearMyDF(focus_df = focusDataframer(), date_column_label = 'DATE', bring_all_records_for = '2016'):
     """
     REQUIRES A DATAFRAME, COLUMN NAME THAT HAS DATE OF EACH RECORD, 
@@ -86,7 +91,7 @@ def addMonthFilterByYearMyDF(focus_df = focusDataframer(), date_column_label = '
     filtered_by_year_df = focus_df.loc[focus_df['ye4r'] == bring_all_records_for]
     filtered_by_year_df['m0nth'] = [date[:2] for date in filtered_by_year_df['DATE']]
     return filtered_by_year_df.drop(columns = ['DATE', 'ye4r'])
-# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
+# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
 def monthNamesLister(months_in_numbers_list = np.arange(12)):
 
     """ RETURNS LIST OF FULL NAMES OF MONTHS GIVEN AS 01 OR 02 OR 03 ETC"""
@@ -101,4 +106,4 @@ def monthNamesLister(months_in_numbers_list = np.arange(12)):
         for integerMonth in list(months_in_numbers_list)
     ]
     return out_list
-# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
+# -----  -----  -----  -----  -----  -----  -----  -----  -----  -----  
