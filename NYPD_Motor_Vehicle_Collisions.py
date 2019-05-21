@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 plt.style.use('fivethirtyeight')
 from NYPD_functions import (
-    dataFrameNYC, 
+    dataFram3NYC, 
     dataFram3NYC,
     focusDataframer,
     dateFilterMyDataFrame
@@ -19,7 +19,7 @@ from NYPD_functions import (
 def solution01of08():
     """Q-1: What is the total number of persons injured in the dataset (up to December 31, 2018?)"""
     pass
-    master_df = dataFrameNYC()
+    master_df = dataFram3NYC()
     focus_df = master_df[['DATE', 'NUMBER OF PERSONS INJURED']]
     focus_df['dat3'] = [date[-4:] for date in focus_df['DATE']]
     focus_df.drop(columns='DATE', inplace=True)
@@ -44,7 +44,7 @@ def solution02of08():
     Only consider entries with a non-null value for BOROUGH.
     """
     pass
-    master_df = dataFrameNYC()
+    master_df = dataFram3NYC()
     focus_df = master_df[['DATE', 'BOROUGH', 'UNIQUE KEY']]
     focus_df['ye4r'] = [date[-4:] for date in focus_df['DATE']]
     focus_df.drop(columns='DATE', inplace=True)
@@ -84,7 +84,7 @@ def solution03of08():
     Q-3: What proportion of collisions in 2016 resulted in injury or death of a cyclist?
     """
     pass
-    master_df = dataFrameNYC()
+    master_df = dataFram3NYC()
     focus_df = master_df[[
         'DATE', 'UNIQUE KEY', 'NUMBER OF CYCLIST INJURED',
         'NUMBER OF CYCLIST KILLED'
@@ -134,7 +134,7 @@ def solution04of08():
     https://en.wikipedia.org/wiki/Demographics_of_New_York_City.
     """
     pass
-    master_df = dataFrameNYC()
+    master_df = dataFram3NYC()
     focus_df = master_df[['DATE', 'BOROUGH', 'CONTRIBUTING FACTOR VEHICLE 1']]
     focus_df['ye4r'] = [date[-4:] for date in focus_df['DATE']]
     focus_df.drop(columns='DATE', inplace=True)
@@ -149,7 +149,7 @@ def solution04of08():
     print(onlyCount_df)
     # -----------------------
     fileName_demographicNYC = 'nyc_demograph_2017.csv'
-    demographic_df = dataFrameNYC(fileName_demographicNYC)
+    demographic_df = dataFram3NYC(fileName_demographicNYC)
     demographic_df.set_index('Jurisdiction', inplace=True)
     demographic_df = demographic_df.T
     print(demographic_df)
@@ -221,7 +221,7 @@ def solution05of08():
         STATIC_FOLDER = ''
         # FILE_NAME = 'NYPD_Motor_Vehicle_Collisions.csv'
         PATH_COMPILED = os.path.join(BASE_DIR, STATIC_FOLDER, FILE_NAME)
-        print('\n> > > > dataFrameNYC() now reading csv with file path below')
+        print('\n> > > > dataFram3NYC() now reading csv with file path below')
         print(PATH_COMPILED)
         print()
         _df = pd.read_csv(
@@ -582,4 +582,4 @@ def solution08of08():
 
     return None
 
-# solution08of08()
+solution08of08()
