@@ -2,10 +2,24 @@ import numpy as np
 import matplotlib.path as mpath
 
 # from generate_color4_plot import (
-#     generateRandomDark_c0lor()
-#     generateRandomLight_c0lor()
-#     generateRandomMatplotlib_c0lor()
+#     generateRandomDark_c0lor,
+#     generateRandomLight_c0lor,
+#     generateRandomMatplotlib_c0lor,
+#     markerGenerator4plot,
+#     cut_st4r
+    # 
 #     )
+
+def makeItRandomStyle():
+    """
+    GENERATES RANDOM STYLE, RETURNS NONE
+    """
+    style_list = list(plt.style.available)
+    rand_style_int = np.random.randint(0, len(style_list))
+    random_styl3 = style_list[rand_style_int]
+    plt.style.use(random_styl3)
+    print(random_styl3)
+    return random_styl3
 
 def generateRandomDark_c0lor():
     """
@@ -140,5 +154,54 @@ def cut_st4r(n):
     codes = np.concatenate([circle.codes, star.codes])
     cut_star = mpath.Path(verts, codes)
     return cut_star
+
+def markerGenerator4plot():
+    """
+    CREATES RANDOM MARKERS FOR MATPLOTLIB, DATA VISUALIZATION
+    """
+    pass
+
+    mark3r = [
+        ".",
+        "o",
+        "v",
+        "^",
+        "<",
+        ">",
+        "8",
+        "s",
+        "p",
+        "P",
+        "*",
+        "h",
+        "H",
+        "X",
+        "D",
+        "d"
+    ]
+
+    mark3r_desc = [
+        "point",
+        "circle",
+        "triangle_down",
+        "triangle_up",
+        "triangle_left",
+        "triangle_right",
+        "octagon",
+        "square",
+        "pentagon",
+        "plus (filled)",
+        "star",
+        "hexagon1",
+        "hexagon2",
+        "x (filled)",
+        "diamond",
+        "thin_diamond"
+    ]
+    rand0m_index = np.random.randint(0, len(mark3r))
+    random_marker = mark3r[rand0m_index]
+#     print(len(mark3r))
+#     print(len(mark3r_desc))
+    return random_marker
 
 

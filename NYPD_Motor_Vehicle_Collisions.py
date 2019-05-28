@@ -205,9 +205,7 @@ def solution04of08():
     )
     bringHighestRate()
     return None
-
-
-# d solution04of08()
+# solution04of08()
 # bor0ugh           Bronx  Brooklyn  Manhattan   Queens  Staten Island
 # rat3AlcPerCap  0.000179  0.000213   0.000147  0.00021       0.000202
 # Brooklyn is the highest 0.00021 per capita
@@ -403,8 +401,6 @@ def solution05of08():
 
     barChartTop5ZIPVehCnt(dataPlotFive_df=mungleData4PlotTop5ZIPVehCnt())
     return None
-
-
 # solution05of08()
 
 def solution06of08():
@@ -749,7 +745,7 @@ def solution07aof08():
     bubbleMultiCarInv()
 
     return None
-solution07aof08()
+# solution07aof08()
 
 
 def solution08of08():
@@ -863,3 +859,11 @@ def solution08of08():
 
 # solution08of08()
  
+def main():
+    # solution08of08()
+    
+    return None
+
+
+if __name__ == '__main__':
+    main()
